@@ -1,9 +1,7 @@
 import 'dart:convert';
-
+import 'package:btl_weather_app/screens/weeklyWeatherScreen.dart';
 import 'package:flutter/material.dart';
-
 import 'package:http/http.dart' as http;
-
 import '../models/weather_model.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -14,7 +12,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  Future<Weather> fetchWeather() async {
+  Future<Weather> fetchWeather() async { // fetchWeather() là một hàm để gửi yêu cầu HTTP đến API của OpenWeatherMap để lấy dữ liệu thời tiết
     final resp = await http.get(Uri.parse(
         "https://api.openweathermap.org/data/2.5/weather?q=HaNoi&units=metric&appid=82d78aef7a2755507e23056a5b7b885f"));
 
@@ -23,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
       return Weather.fromJson(json);
     } else {
-      throw Exception('Veriler yüklenemedi...');
+      throw Exception('Không thể tải được dữ liệu...');
     }
   }
 
@@ -49,19 +47,19 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Stack(
           children: [
             SafeArea(
-              top: true,
+              top: true, // Đảm bảo không gian trên cùng của màn hình không bị che khuất.
               child: Column(
                 children: [
                   const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween, //Đặt cách chia đều các thành phần bên trong theo chiều ngang
                     children: [
                       Icon(
                         Icons.menu,
                         color: Colors.white,
                       ),
                       CircleAvatar(
-                        radius: 20,
-                        backgroundImage: AssetImage('assets/person.jpg'),
+                        radius: 25,
+                        backgroundImage: AssetImage('assets/admin.png'),
                       ),
                     ],
                   ),
@@ -70,13 +68,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   FutureBuilder<Weather>(
                     future: myWeather,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
+                    builder: (context, snapshot) {    //Hàm này sẽ xây dựng giao diện dựa trên snapshot của Future.
+                      if (snapshot.hasData) { // Kiểm tra xem dữ liệu đã được load thành công chưa.
                         return Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              snapshot.data!.name,
+                              snapshot.data!.name,  //Hiển thị tên thành phố từ dữ liệu Weather.
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 32,
@@ -87,7 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               height: 8,
                             ),
                             Text(
-                              snapshot.data!.weather[0]['main'].toString(),
+                              snapshot.data!.weather[0]['main'].toString(),   //Hiển thị trạng thái thời tiết chính (ví dụ: mây, mưa)
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 22,
@@ -119,7 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               height: 20,
                             ),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,  //các cột sẽ được căn giữa theo chiều ngang
                               children: [
                                 Column(
                                   children: [
@@ -134,7 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       height: 10,
                                     ),
                                     Text(
-                                      '${((snapshot.data!.main['temp'] - 32 * 5) / 9).toStringAsFixed(2)}',
+                                      '${snapshot.data!.main['temp']}',
                                       style: const TextStyle(
                                         color: Colors.white,
                                         fontSize: 21,
@@ -199,10 +197,15 @@ class _HomeScreenState extends State<HomeScreen> {
                               height: 30,
                             ),
                             ElevatedButton(
-                              onPressed: () {},
-                              child: const Text('Haftalık Hava Durumunu Gör'),
+                              onPressed: () {
+                                Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => WeeklyWeatherScreen(),
+                                ),
+                              );},
+                              child: const Text('Xem thời tiết hàng tuần'),
                               style: ElevatedButton.styleFrom(
-                                  primary: Colors.deepPurpleAccent[100],
+                                  primary: Colors.deepPurpleAccent[100],  //Thiết lập màu sắc chính của nút độ sáng 100
                                   minimumSize: Size(
                                     MediaQuery.of(context).size.width / 1.1,
                                     50,
@@ -211,7 +214,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ],
                         );
                       } else if (snapshot.hasError) {
-                        return const Text('Veriler yüklenemedi..');
+                        return const Text('Không thể tải dữ liệu');
                       } else {
                         return const CircularProgressIndicator(
                           color: Colors.white,

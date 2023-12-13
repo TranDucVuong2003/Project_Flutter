@@ -60,7 +60,7 @@ class _WeeklyWeatherScreenState extends State<WeeklyWeatherScreen> {
           future: weeklyWeather,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
+              return const Center(
                 child: CircularProgressIndicator(),
               );
             } else if (snapshot.hasError) {
@@ -68,7 +68,7 @@ class _WeeklyWeatherScreenState extends State<WeeklyWeatherScreen> {
                 child: Text('Lỗi: ${snapshot.error}'),
               );
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return Center(
+              return const Center(
                 child: Text('Không có thông tin thời tiết.'),
               );
             } else {
@@ -95,7 +95,7 @@ class _WeeklyWeatherScreenState extends State<WeeklyWeatherScreen> {
                         'Nhiệt độ: ${weatherInfo.temperature}°C',
                         style: const TextStyle(fontSize: 16),
                       ),
-                      leading: Icon(
+                      leading: const Icon(
                         Icons.cloud,
                         color: Colors.blue,
                       ),

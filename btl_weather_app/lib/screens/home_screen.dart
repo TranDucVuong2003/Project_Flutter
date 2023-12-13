@@ -12,7 +12,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  Future<Weather> fetchWeather() async { // fetchWeather() là một hàm để gửi yêu cầu HTTP đến API của OpenWeatherMap để lấy dữ liệu thời tiết
+  Future<Weather> fetchWeather() async {
     final resp = await http.get(Uri.parse(
         "https://api.openweathermap.org/data/2.5/weather?q=HaNoi&units=metric&appid=82d78aef7a2755507e23056a5b7b885f"));
 
@@ -29,13 +29,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     myWeather = fetchWeather();
   }
 
   @override
   Widget build(BuildContext context) {
+    DateTime currentDate = DateTime.now();
+    String formattedDate =
+        "${currentDate.day}/${currentDate.month}/${currentDate.year}";
+
     return Scaffold(
       backgroundColor: const Color(0xFF676BD0),
       body: Padding(
@@ -47,19 +50,15 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Stack(
           children: [
             SafeArea(
-              top: true, // Đảm bảo không gian trên cùng của màn hình không bị che khuất.
+              top: true,
               child: Column(
                 children: [
                   const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween, //Đặt cách chia đều các thành phần bên trong theo chiều ngang
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Icon(
                         Icons.menu,
                         color: Colors.white,
-                      ),
-                      CircleAvatar(
-                        radius: 25,
-                        backgroundImage: AssetImage('assets/admin.png'),
                       ),
                     ],
                   ),
@@ -68,13 +67,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   FutureBuilder<Weather>(
                     future: myWeather,
-                    builder: (context, snapshot) {    //Hàm này sẽ xây dựng giao diện dựa trên snapshot của Future.
-                      if (snapshot.hasData) { // Kiểm tra xem dữ liệu đã được load thành công chưa.
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
                         return Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              snapshot.data!.name,  //Hiển thị tên thành phố từ dữ liệu Weather.
+                              snapshot.data!.name,
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 32,
@@ -85,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               height: 8,
                             ),
                             Text(
-                              snapshot.data!.weather[0]['main'].toString(),   //Hiển thị trạng thái thời tiết chính (ví dụ: mây, mưa)
+                              snapshot.data!.weather[0]['main'].toString(),
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 22,
@@ -96,9 +95,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             const SizedBox(
                               height: 10,
                             ),
-                            const Text(
-                              '8 - 12 - 2023',
-                              style: TextStyle(
+                            Text(
+                              formattedDate,
+                              style: const TextStyle(
                                 color: Colors.white,
                               ),
                             ),
@@ -117,7 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               height: 20,
                             ),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.center,  //các cột sẽ được căn giữa theo chiều ngang
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Column(
                                   children: [
@@ -199,17 +198,20 @@ class _HomeScreenState extends State<HomeScreen> {
                             ElevatedButton(
                               onPressed: () {
                                 Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => WeeklyWeatherScreen(),
-                                ),
-                              );},
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => WeeklyWeatherScreen(),
+                                  ),
+                                );
+                              },
                               child: const Text('Xem thời tiết hàng tuần'),
                               style: ElevatedButton.styleFrom(
-                                  primary: Colors.deepPurpleAccent[100],  //Thiết lập màu sắc chính của nút độ sáng 100
-                                  minimumSize: Size(
-                                    MediaQuery.of(context).size.width / 1.1,
-                                    50,
-                                  )),
+                                primary: Colors.deepPurpleAccent[100],
+                                minimumSize: Size(
+                                  MediaQuery.of(context).size.width / 1.1,
+                                  50,
+                                ),
+                              ),
                             )
                           ],
                         );

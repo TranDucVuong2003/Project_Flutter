@@ -204,7 +204,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                 );
                               },
-                              child: Text('Xem thời tiết hàng tuần'),
+                              child: Text('Xem thời tiết trong tuần '),
                               style: ElevatedButton.styleFrom(
                                 primary: Colors.deepPurpleAccent[100],
                                 minimumSize: Size(
